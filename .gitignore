@@ -63,3 +63,4 @@ Index/
 ingest_p*.db
 ingest_*.db
 ingest_*.db-journal
+test-data/
