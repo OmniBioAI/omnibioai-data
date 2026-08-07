@@ -16,6 +16,9 @@ tool-images/
 omnibioai-tool-images/
 local_registry/
 data.bak/
+test-data/
+histopath_tumor/
+protein_stability_ddg/
 
 # Keep directory structure
 !**/.gitkeep
