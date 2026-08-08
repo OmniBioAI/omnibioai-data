@@ -4,7 +4,7 @@ Runtime data directory for the OmniBioAI platform. This repository contains the 
 
 Large runtime files (datasets, uploads, results, cached data, tool images) are excluded from version control via `.gitignore`. The directory structure is preserved via `.gitkeep` files.
 
-**v0.4.0-beta** — full reference genome registry (14 organisms), alignment indexes, variant databases, and AI knowledge base (35M+ PubMed abstracts, 108 FAISS indexes).
+**v0.4.0-beta** — full reference genome registry (12 organisms), alignment indexes, variant databases, and AI knowledge base (35M+ PubMed abstracts, 213 FAISS indexes).
 
 ## Data Scale
 
@@ -21,27 +21,28 @@ omnibioai-data/
 ├── datasets/               # User datasets (not tracked)
 ├── downloads/              # Downloaded files (not tracked)
 ├── uploads/                # User uploads (not tracked)
-├── results/                # Analysis results (not tracked)
 ├── reports/                # Generated reports (not tracked)
 ├── logs/                   # Application logs (not tracked)
 ├── cache/                  # Cached data (not tracked)
-├── igv_snapshots/          # IGV genome browser snapshots (not tracked)
-├── single_cell/            # Single-cell analysis data (not tracked)
+├── celltype_sc/            # Cell-type single-cell classifier data (not tracked)
+├── histopath_tumor/        # Histopathology tumor classifier data (not tracked)
+├── protein_stability_ddg/  # Protein stability ΔΔG predictor data (not tracked)
+├── Metadata/                # Metadata (not tracked)
+├── test-data/                # Test fixtures (not tracked)
 ├── omni_object_storage/    # OmniBioAI object storage (not tracked)
 ├── omni_objects/           # OmniBioAI objects (not tracked)
 ├── objects/                # Runtime objects (not tracked)
-├── reference/              # Reference genomes & annotations (not tracked)
-│   ├── organisms/          # 14 organism genomes
+├── reference/              # Symlink to external storage — reference genomes & annotations
+│   ├── organisms/          # 12 organism genomes
 │   ├── indexes/            # STAR, BWA, Bowtie2, Salmon, CellRanger
 │   ├── variants/           # ClinVar, dbSNP, gnomAD, COSMIC
 │   ├── databases/          # GO, InterPro, Pfam, UniProt
 │   └── annotation/         # Ensembl, GENCODE, RefSeq, UCSC
 ├── PubMed/                 # AI knowledge base (not tracked)
 │   ├── Abstracts/          # 35M+ PubMed abstracts (141 domains)
-│   └── Index/              # FAISS vector indexes (108 domains, 8 GB)
+│   └── Index/              # FAISS vector indexes (213 domains, 8 GB)
 ├── scripts/                # Download and utility scripts
 ├── tool-images/            # Tool container images (not tracked)
-├── omnibioai-tool-images/  # OmniBioAI tool images (not tracked)
 ├── local_registry/         # Local model/tool registry (not tracked)
 ├── object_registry.json    # Object registry index
 ├── workflow_registry.json  # Workflow registry index
@@ -50,7 +51,7 @@ omnibioai-data/
 
 ## Reference Genomes
 
-14 organism genomes are stored under `reference/organisms/`, each at the canonical assembly version used by the platform.
+12 organism genomes are stored under `reference/organisms/`, each at the canonical assembly version used by the platform.
 
 | Organism | Assembly |
 |----------|----------|
@@ -73,10 +74,10 @@ Pre-built indexes are stored under `reference/indexes/`.
 
 | Index | Organisms |
 |-------|-----------|
-| STAR | All 14 organisms |
-| BWA | All 14 organisms |
-| Bowtie2 | All 14 organisms |
-| Salmon | All 14 organisms |
+| STAR | All 12 organisms |
+| BWA | All 12 organisms |
+| Bowtie2 | All 12 organisms |
+| Salmon | All 12 organisms |
 | CellRanger (2024-A) | Human only |
 
 > **Note:** The zebrafish (GRCz11) STAR index requires ~141GB RAM
@@ -118,7 +119,7 @@ The `PubMed/` subtree provides a local biomedical AI knowledge base for RAG-powe
 | Component | Details |
 |-----------|---------|
 | Abstracts | 35M+ PubMed abstracts across 141 biomedical domains |
-| FAISS indexes | 108 domain-specific vector indexes, 8.15 GB total |
+| FAISS indexes | 213 domain-specific vector indexes, 8.15 GB total |
 | Embedding model | `mxbai-embed-large` |
 
 Indexes are built per domain and queried at inference time by the OmniBioAI retrieval pipeline.
@@ -130,7 +131,7 @@ Download and utility scripts are stored under `scripts/`.
 | Script | Purpose |
 |--------|---------|
 | `scripts/download_cosmic.sh` | Authenticated COSMIC v104 download (GRCh37 + GRCh38) |
-| `scripts/download_references.py` | Reference genome downloader for all 14 organisms |
+| `scripts/download_references.py` | Reference genome downloader for all 12 organisms |
 | `scripts/download_pubmed.sh` | PubMed abstracts bulk downloader |
 
 ## Sample Files
@@ -159,9 +160,10 @@ DATA_DIR=/home/manish/Desktop/machine/omnibioai-data
 On first run, create the required runtime directories:
 
 ```bash
-mkdir -p datasets downloads uploads results reports logs cache \
-         igv_snapshots single_cell omni_object_storage omni_objects \
-         objects tool-images omnibioai-tool-images local_registry \
+mkdir -p datasets downloads uploads reports logs cache \
+         celltype_sc histopath_tumor protein_stability_ddg Metadata test-data \
+         omni_object_storage omni_objects \
+         objects tool-images local_registry \
          reference/organisms reference/indexes reference/variants \
          reference/databases reference/annotation \
          PubMed/Abstracts PubMed/Index \
